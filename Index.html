@@ -5,11 +5,76 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>4Pin for Pia</title>
   <style>
-    .tried { color: green; }
-    .not-tried { color: red; }
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      height: 100vh;
+      background-color: #f4f4f4;
+      margin: 0;
+      text-align: center;
+    }
+    h1 {
+      color: #333;
+    }
+    #pinInput {
+      padding: 10px;
+      font-size: 16px;
+      margin-bottom: 10px;
+      width: 200px;
+      border: 2px solid #ccc;
+      border-radius: 5px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    /* Table styling */
+    table {
+      width: 80%;
+      margin-top: 20px;
+      border-collapse: collapse;
+      margin: 20px auto;
+    }
+
+    th, td {
+      padding: 12px;
+      border: 1px solid #ddd;
+      text-align: center;
+    }
+
+    th {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    /* Status classes */
+    .tried { 
+      color: green;
+      font-weight: bold;
+    }
+
+    .not-tried { 
+      color: red;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
+
   <h1>4Pin for Pia!!! rawr</h1>
   
   <input type="text" id="pinInput" placeholder="Enter 4Pin">
@@ -41,8 +106,10 @@
       }
     }
 
+    
     window.onload = generateAllPins;
 
+    // Function to track the entered PIN
     function trackPin() {
       const pin = document.getElementById('pinInput').value.trim();
       
@@ -50,7 +117,6 @@
         alert('Please enter a PIN');
         return;
       }
-      
       fetch('/track-pin', {
         method: 'POST',
         headers: {
@@ -78,5 +144,6 @@
       });
     }
   </script>
+
 </body>
 </html>
