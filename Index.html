@@ -121,21 +121,14 @@
         return;
       }
 
-      fetch('/track-pin', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ pin })
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) {
-          updateStatus(pin);
-        } else {
-          alert('4Pin not found!');
-        }
-      });
+      simulateServerResponse(pin)
+        .then(data => {
+          if (data.success) {
+            updateStatus(pin);
+          } else {
+            alert('4Pin not found!');
+          }
+        });
     }
 
     function updateStatus(pin) {
@@ -145,7 +138,7 @@
         if (cells[0].textContent === pin) {
           cells[1].textContent = 'Tried';
           cells[1].className = 'tried';
-          row.remove();
+          row.style.display = 'none';  // Hide the row once it's marked as "Tried"
         }
       });
     }
@@ -162,24 +155,6 @@
           resolve({ success: true });
         }, 500);
       });
-    }
-
-    function trackPin() {
-      const pin = document.getElementById('pinInput').value.trim();
-      
-      if (!pin) {
-        alert('Please enter a PIN');
-        return;
-      }
-
-      simulateServerResponse(pin)
-        .then(data => {
-          if (data.success) {
-            updateStatus(pin);
-          } else {
-            alert('4Pin not found!');
-          }
-        });
     }
   </script>
 
