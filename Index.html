@@ -20,20 +20,36 @@
       <th>4Pin</th>
       <th>Status</th>
     </tr>
-    <!-- Example rows: -->
-    <tr>
-      <td>1234</td>
-      <td class="not-tried">Not Tried</td>
-    </tr>
-    <tr>
-      <td>5678</td>
-      <td class="not-tried">Not Tried</td>
-    </tr>
   </table>
-  
+
   <script>
+    function generateAllPins() {
+      const table = document.getElementById('pinTable');
+      for (let i = 0; i < 10000; i++) {
+        const pin = i.toString().padStart(4, '0'); // Pad the number with leading zeros if needed
+        const row = document.createElement('tr');
+        const pinCell = document.createElement('td');
+        const statusCell = document.createElement('td');
+        
+        pinCell.textContent = pin;
+        statusCell.textContent = 'Not Tried';
+        statusCell.className = 'not-tried';
+        
+        row.appendChild(pinCell);
+        row.appendChild(statusCell);
+        table.appendChild(row);
+      }
+    }
+
+    window.onload = generateAllPins;
+
     function trackPin() {
-      const pin = document.getElementById('pinInput').value;
+      const pin = document.getElementById('pinInput').value.trim();
+      
+      if (!pin) {
+        alert('Please enter a PIN');
+        return;
+      }
       
       fetch('/track-pin', {
         method: 'POST',
@@ -51,7 +67,6 @@
         }
       });
     }
-
     function updateStatus(pin) {
       const rows = document.querySelectorAll('#pinTable tr');
       rows.forEach(row => {
