@@ -16,9 +16,13 @@
       margin: 0;
       text-align: center;
     }
+
     h1 {
       color: #333;
+      font-size: 24px;
+      margin-bottom: 20px;
     }
+
     #pinInput {
       padding: 10px;
       font-size: 16px;
@@ -42,12 +46,14 @@
       background-color: #45a049;
     }
 
-    /* Table styling */
     table {
-      width: 80%;
+      width: 90%;
       margin-top: 20px;
       border-collapse: collapse;
       margin: 20px auto;
+      max-height: 400px;
+      overflow-y: auto;
+      display: block;
     }
 
     th, td {
@@ -61,7 +67,6 @@
       color: white;
     }
 
-    /* Status classes */
     .tried { 
       color: green;
       font-weight: bold;
@@ -91,7 +96,7 @@
     function generateAllPins() {
       const table = document.getElementById('pinTable');
       for (let i = 0; i < 10000; i++) {
-        const pin = i.toString().padStart(4, '0'); // Pad the number with leading zeros if needed
+        const pin = i.toString().padStart(4, '0');
         const row = document.createElement('tr');
         const pinCell = document.createElement('td');
         const statusCell = document.createElement('td');
@@ -106,10 +111,8 @@
       }
     }
 
-    
     window.onload = generateAllPins;
 
-    // Function to track the entered PIN
     function trackPin() {
       const pin = document.getElementById('pinInput').value.trim();
       
@@ -117,6 +120,7 @@
         alert('Please enter a PIN');
         return;
       }
+      
       fetch('/track-pin', {
         method: 'POST',
         headers: {
@@ -133,6 +137,7 @@
         }
       });
     }
+
     function updateStatus(pin) {
       const rows = document.querySelectorAll('#pinTable tr');
       rows.forEach(row => {
@@ -140,6 +145,7 @@
         if (cells[0].textContent === pin) {
           cells[1].textContent = 'Tried';
           cells[1].className = 'tried';
+          row.remove();
         }
       });
     }
