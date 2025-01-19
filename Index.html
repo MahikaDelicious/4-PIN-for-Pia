@@ -3,8 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>4Pin for Pia</title>
+  <title>4Pin Tracker</title>
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
       font-family: Arial, sans-serif;
       display: flex;
@@ -13,21 +19,31 @@
       flex-direction: column;
       height: 100vh;
       background-color: #f4f4f4;
-      margin: 0;
-      text-align: center;
     }
 
     h1 {
-      color: #333;
-      font-size: 24px;
       margin-bottom: 20px;
+      color: #333;
+      font-size: 30px;
+      text-align: center;
     }
 
-    #pinInput {
+    .container {
+      width: 100%;
+      max-width: 600px;
+      text-align: center;
+      padding: 20px;
+      background-color: white;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+    }
+
+    input[type="text"] {
       padding: 10px;
       font-size: 16px;
+      width: 80%;
+      max-width: 200px;
       margin-bottom: 10px;
-      width: 200px;
       border: 2px solid #ccc;
       border-radius: 5px;
     }
@@ -40,6 +56,7 @@
       border: none;
       border-radius: 5px;
       cursor: pointer;
+      margin-bottom: 20px;
     }
 
     button:hover {
@@ -47,17 +64,13 @@
     }
 
     table {
-      width: 90%;
+      width: 100%;
       margin-top: 20px;
       border-collapse: collapse;
-      margin: 20px auto;
-      max-height: 400px;
-      overflow-y: auto;
-      display: block;
     }
 
     th, td {
-      padding: 12px;
+      padding: 10px;
       border: 1px solid #ddd;
       text-align: center;
     }
@@ -67,93 +80,80 @@
       color: white;
     }
 
-    .tried { 
+    .tried {
       color: green;
       font-weight: bold;
     }
 
-    .not-tried { 
+    .not-tried {
       color: red;
       font-weight: bold;
     }
+
   </style>
 </head>
 <body>
 
-  <h1>4Pin for Pia!!! rawr</h1>
-  
-  <input type="text" id="pinInput" placeholder="Enter 4Pin">
-  <button onclick="trackPin()">Enter</button>
-  
-  <table id="pinTable">
-    <tr>
-      <th>4Pin</th>
-      <th>Status</th>
-    </tr>
-  </table>
+  <div class="container">
+    <h1>4Pin Tracker</h1>
+    <input type="text" id="pinInput" placeholder="Enter 4-digit PIN" maxlength="4">
+    <button onclick="trackPin()">Track PIN</button>
+
+    <table id="pinTable">
+      <thead>
+        <tr>
+          <th>4Pin</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+  </div>
 
   <script>
-    function generateAllPins() {
-      const table = document.getElementById('pinTable');
-      for (let i = 0; i < 10000; i++) {
-        const pin = i.toString().padStart(4, '0');
-        const row = document.createElement('tr');
-        const pinCell = document.createElement('td');
-        const statusCell = document.createElement('td');
-        
-        pinCell.textContent = pin;
-        statusCell.textContent = 'Not Tried';
-        statusCell.className = 'not-tried';
-        
-        row.appendChild(pinCell);
-        row.appendChild(statusCell);
-        table.appendChild(row);
-      }
-    }
-
-    window.onload = generateAllPins;
+    let trackedPins = [];
 
     function trackPin() {
-      const pin = document.getElementById('pinInput').value.trim();
-      
+      const pinInput = document.getElementById('pinInput');
+      const pin = pinInput.value.trim();
+
       if (!pin) {
-        alert('Please enter a PIN');
+        alert('Please enter a 4-digit PIN!');
         return;
       }
 
-      simulateServerResponse(pin)
-        .then(data => {
-          if (data.success) {
-            updateStatus(pin);
-          } else {
-            alert('4Pin not found!');
-          }
-        });
-    }
-
-    function updateStatus(pin) {
-      const rows = document.querySelectorAll('#pinTable tr');
-      rows.forEach(row => {
-        const cells = row.querySelectorAll('td');
-        if (cells[0].textContent === pin) {
-          cells[1].textContent = 'Tried';
-          cells[1].className = 'tried';
-          row.style.display = 'none';  // Hide the row once it's marked as "Tried"
-        }
-      });
-    }
-
-    document.getElementById('pinInput').addEventListener('keydown', function(event) {
-      if (event.key === 'Enter') {
-        trackPin();
+      if (pin.length !== 4 || isNaN(pin)) {
+        alert('PIN must be 4 digits!');
+        return;
       }
-    });
 
-    function simulateServerResponse(pin) {
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          resolve({ success: true });
-        }, 500);
+      if (trackedPins.includes(pin)) {
+        alert('This PIN has already been tracked!');
+        return;
+      }
+
+      trackedPins.push(pin);
+      updateTable();
+      pinInput.value = '';
+    }
+
+    function updateTable() {
+      const tableBody = document.querySelector('#pinTable tbody');
+      tableBody.innerHTML = '';
+
+      trackedPins.forEach(pin => {
+        const row = document.createElement('tr');
+        const pinCell = document.createElement('td');
+        const statusCell = document.createElement('td');
+
+        pinCell.textContent = pin;
+        statusCell.textContent = 'Tried';
+        statusCell.className = 'tried';
+
+        row.appendChild(pinCell);
+        row.appendChild(statusCell);
+        tableBody.appendChild(row);
       });
     }
   </script>
