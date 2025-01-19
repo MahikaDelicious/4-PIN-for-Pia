@@ -120,7 +120,7 @@
         alert('Please enter a PIN');
         return;
       }
-      
+
       fetch('/track-pin', {
         method: 'POST',
         headers: {
@@ -148,6 +148,38 @@
           row.remove();
         }
       });
+    }
+
+    document.getElementById('pinInput').addEventListener('keydown', function(event) {
+      if (event.key === 'Enter') {
+        trackPin();
+      }
+    });
+
+    function simulateServerResponse(pin) {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve({ success: true });
+        }, 500);
+      });
+    }
+
+    function trackPin() {
+      const pin = document.getElementById('pinInput').value.trim();
+      
+      if (!pin) {
+        alert('Please enter a PIN');
+        return;
+      }
+
+      simulateServerResponse(pin)
+        .then(data => {
+          if (data.success) {
+            updateStatus(pin);
+          } else {
+            alert('4Pin not found!');
+          }
+        });
     }
   </script>
 
