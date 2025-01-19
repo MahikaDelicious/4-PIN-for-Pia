@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>4Pin Tracker</title>
+  <style>
+    .tried { color: green; }
+    .not-tried { color: red; }
+  </style>
+</head>
+<body>
+  <h1>4Pin Tracker</h1>
+  
+  <input type="text" id="pinInput" placeholder="Enter 4Pin">
+  <button onclick="trackPin()">Enter</button>
+  
+  <table id="pinTable">
+    <tr>
+      <th>4Pin</th>
+      <th>Status</th>
+    </tr>
+    <!-- Example rows: -->
+    <tr>
+      <td>1234</td>
+      <td class="not-tried">Not Tried</td>
+    </tr>
+    <tr>
+      <td>5678</td>
+      <td class="not-tried">Not Tried</td>
+    </tr>
+  </table>
+  
+  <script>
+    function trackPin() {
+      const pin = document.getElementById('pinInput').value;
+      
+      fetch('/track-pin', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ pin })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          updateStatus(pin);
+        } else {
+          alert('4Pin not found!');
+        }
+      });
+    }
+
+    function updateStatus(pin) {
+      const rows = document.querySelectorAll('#pinTable tr');
+      rows.forEach(row => {
+        const cells = row.querySelectorAll('td');
+        if (cells[0].textContent === pin) {
+          cells[1].textContent = 'Tried';
+          cells[1].className = 'tried';
+        }
+      });
+    }
+  </script>
+</body>
+</html>
